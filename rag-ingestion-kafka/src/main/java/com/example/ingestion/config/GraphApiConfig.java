@@ -12,13 +12,13 @@ import java.util.List;
 @Configuration
 public class GraphApiConfig {
 
-    @Value("\${azure.graph.client-id}")
+    @Value("${azure.graph.client-id}")
     private String clientId;
 
-    @Value("\${azure.graph.client-secret}")
+    @Value("${azure.graph.client-secret}")
     private String clientSecret;
 
-    @Value("\${azure.graph.tenant-id}")
+    @Value("${azure.graph.tenant-id}")
     private String tenantId;
 
     @Bean
