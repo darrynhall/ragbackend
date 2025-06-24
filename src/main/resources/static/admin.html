@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin File Upload and Delete</title>
+  <style>
+    #drop-area {
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 500px;
+      margin: 30px auto;
+      padding: 20px;
+      text-align: center;
+    }
+    .highlight { border-color: green; }
+    table { margin-top: 30px; border-collapse: collapse; width: 80%; margin-left: auto; margin-right: auto; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h1 style="text-align:center;">Admin File Upload & Delete</h1>
+  <div id="drop-area">
+    <p>Drag & drop files here</p>
+    <input type="text" id="userId" placeholder="User ID" /><br/><br/>
+    <input type="file" id="fileElem" multiple />
+    <label class="button" for="fileElem">Select some files</label>
+  </div>
+
+  <h2 style="text-align:center;">Uploaded Files</h2>
+  <table id="fileTable">
+    <thead>
+      <tr><th>Select</th><th>Filename</th><th>Status</th><th>Timestamp</th></tr>
+    </thead>
+    <tbody id="fileBody"></tbody>
+  </table>
+  <div style="text-align:center;margin-top:20px;">
+    <button onclick="deleteSelected()">Delete Selected</button>
+  </div>
+
+  <script>
+    const dropArea = document.getElementById('drop-area');
+    const userIdField = document.getElementById('userId');
+
+    ['dragenter', 'dragover'].forEach(event => {
+      dropArea.addEventListener(event, e => {
+        e.preventDefault();
+        dropArea.classList.add('highlight');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(event => {
+      dropArea.addEventListener(event, e => {
+        e.preventDefault();
+        dropArea.classList.remove('highlight');
+      });
+    });
+
+    dropArea.addEventListener('drop', handleDrop);
+
+    function handleDrop(e) {
+      const files = e.dataTransfer.files;
+      const userId = userIdField.value;
+      [...files].forEach(file => uploadFile(file, userId));
+    }
+
+    function uploadFile(file, userId) {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('userId', userId);
+
+      fetch('/api/files/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.text())
+      .then(() => loadFileList(userId))
+      .catch(err => alert('Upload Failed: ' + file.name));
+    }
+
+    function loadFileList(userId) {
+      fetch(`/api/status/user/${userId}`)
+        .then(res => res.json())
+        .then(files => {
+          const table = document.getElementById('fileBody');
+          table.innerHTML = '';
+          files.forEach(file => {
+            const row = `<tr>
+              <td><input type="checkbox" value="${file.filename}" /></td>
+              <td>${file.filename}</td>
+              <td>${file.status}</td>
+              <td>${file.timestamp}</td>
+            </tr>`;
+            table.innerHTML += row;
+          });
+        });
+    }
+
+    function deleteSelected() {
+      const checkboxes = document.querySelectorAll('#fileBody input[type="checkbox"]:checked');
+      const filenames = [...checkboxes].map(cb => cb.value);
+      if (!filenames.length) return alert("No files selected.");
+
+      if (!confirm("Are you sure you want to delete the selected files?")) return;
+
+      filenames.forEach(filename => {
+        fetch(`/api/files/delete/${filename}`, { method: 'DELETE' })
+          .then(res => res.text())
+          .then(() => {
+            alert(`Deleted: ${filename}`);
+            loadFileList(userIdField.value);
+          })
+          .catch(() => alert(`Delete failed for: ${filename}`));
+      });
+    }
+
+    userIdField.addEventListener('blur', () => {
+      if (userIdField.value) loadFileList(userIdField.value);
+    });
+  </script>
+</body>
+</html>
