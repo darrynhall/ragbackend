@@ -11,19 +11,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class AzureConfig {
 
-    @Value("\${azure.openai.api-key}")
+    @Value("${azure.openai.api-key}")
     private String openaiApiKey;
 
-    @Value("\${azure.openai.endpoint}")
+    @Value("${azure.openai.endpoint}")
     private String openaiEndpoint;
 
-    @Value("\${azure.search.api-key}")
+    @Value("${azure.search.api-key}")
     private String searchApiKey;
 
-    @Value("\${azure.search.endpoint}")
+    @Value("${azure.search.endpoint}")
     private String searchEndpoint;
 
-    @Value("\${azure.search.index-name}")
+    @Value("${azure.search.index-name}")
     private String indexName;
 
     @Bean
