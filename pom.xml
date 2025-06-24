@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>org.aero</groupId>
+    <groupId>com.example</groupId>
     <artifactId>ingestion</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
