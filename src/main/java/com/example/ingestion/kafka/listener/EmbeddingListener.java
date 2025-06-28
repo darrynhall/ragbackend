@@ -39,7 +39,7 @@ public class EmbeddingListener {
 
         try {
             List<String> chunks = event.chunks();
-            List<String> newChunks = deconflictionService.filterDuplicates(chunks);
+            List<String> newChunks = deconflictionService.filterDuplicateChunks(chunks, filename);
             if (newChunks.isEmpty()) {
                 logger.info("No new content to embed for file: {}", filename);
                 return;
