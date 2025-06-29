@@ -32,7 +32,7 @@ public class ChunkingListener {
         String filename = event.filename();
         logger.info("Starting chunking for file: {}", filename);
         try {
-            List<String> chunks = chunker.chunk(event.text());
+            List<String> chunks = chunker.transform(event.text());
             kafkaTemplate.send("text.chunked", new ChunksGeneratedEvent(filename, chunks));
             logger.info("Chunking successful for file: {}", filename);
             retryCounts.remove(filename);
