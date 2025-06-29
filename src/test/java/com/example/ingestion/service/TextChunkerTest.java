@@ -13,7 +13,7 @@ public class TextChunkerTest {
     @Test
     public void testChunk() {
         String text = "Paragraph one.\n\nParagraph two.";
-        List<String> chunks = chunker.chunk(text);
+        List<String> chunks = chunker.transform(text);
         assertEquals(2, chunks.size());
         assertTrue(chunks.get(0).contains("Paragraph one"));
     }

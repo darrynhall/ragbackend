@@ -5,11 +5,14 @@ import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.springframework.stereotype.Service;
 
+import com.example.ingestion.etl.Extractor;
+
 import java.io.InputStream;
 
 @Service
-public class TextExtractorService {
+public class TextExtractorService implements Extractor<InputStream, String> {
 
+    @Override
     public String extract(InputStream inputStream) {
         try {
             AutoDetectParser parser = new AutoDetectParser();
