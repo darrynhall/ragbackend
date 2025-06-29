@@ -27,7 +27,7 @@ public class TextExtractionListener {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @KafkaListener(topics = "file.upload", groupId = "ingestion")
+    @KafkaListener(topics = "file.uploaded", groupId = "ingestion")
     public void handle(FileUploadEvent event) {
         String filename = event.filename();
         String userId = event.userId();
