@@ -2,8 +2,7 @@ package com.example.ingestion.service;
 
 import com.example.ingestion.model.FileUploadEvent;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +14,8 @@ import java.io.InputStream;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FileUploadService {
-    private static final Logger logger = LoggerFactory.getLogger(FileUploadService.class);
 
     private final KafkaTemplate<String, FileUploadEvent> kafkaTemplate;
 
@@ -29,7 +28,7 @@ public class FileUploadService {
      */
     public void upload(String filename, InputStream content, String userId) {
         // In this sample we just log and emit an event. The content would normally be stored.
-        logger.info("Received file '{}' from user '{}'; emitting upload event", filename, userId);
+        log.info("Received file '{}' from user '{}'; emitting upload event", filename, userId);
         kafkaTemplate.send("file.uploaded", new FileUploadEvent(filename, userId, System.currentTimeMillis()));
     }
 
@@ -39,7 +38,7 @@ public class FileUploadService {
      * @param filename name of the file to delete
      */
     public void deleteByFilename(String filename) {
-        logger.info("Deleting stored file '{}'; emitting delete event", filename);
+        log.info("Deleting stored file '{}'; emitting delete event", filename);
         // A real implementation would remove the file from storage
         kafkaTemplate.send("file.deleted", new FileUploadEvent(filename, "system", System.currentTimeMillis()));
     }
