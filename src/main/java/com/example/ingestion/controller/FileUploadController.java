@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Parameter;
 
 import java.util.ArrayList;
@@ -24,9 +28,11 @@ public class FileUploadController {
 
     private final FileUploadService fileUploadService;
 
+    @Operation(summary = "Upload one or more files", description = "Upload files using a file picker.",
+        requestBody = @RequestBody(content = @Content(mediaType = "multipart/form-data",
+            array = @ArraySchema(schema = @Schema(type = "string", format = "binary")))))
     @PostMapping("/upload")
     public ResponseEntity<List<String>> uploadFiles(
-            @Parameter(description = "Files to upload", required = true)
             @RequestParam("files") MultipartFile[] files) {
         List<String> fileDownloadUris = new ArrayList<>();
         String userId = "system"; // Replace with actual user id if available
