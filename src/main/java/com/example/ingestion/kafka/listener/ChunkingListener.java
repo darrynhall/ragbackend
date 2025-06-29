@@ -30,10 +30,11 @@ public class ChunkingListener {
     @KafkaListener(topics = "text.extracted", groupId = "ingestion")
     public void handle(TextExtractedEvent event) {
         String filename = event.filename();
+        String userId = event.userId();
         logger.info("Starting chunking for file: {}", filename);
         try {
             List<String> chunks = chunker.transform(event.text());
-            kafkaTemplate.send("text.chunked", new ChunksGeneratedEvent(filename, chunks));
+            kafkaTemplate.send("text.chunked", new ChunksGeneratedEvent(filename, chunks, userId));
             logger.info("Chunking successful for file: {}", filename);
             retryCounts.remove(filename);
         } catch (Exception e) {

@@ -26,7 +26,7 @@ public class IndexingListener {
         String filename = event.filename();
         logger.info("Starting indexing for file: {}", filename);
         try {
-            indexService.index(event.vectors(), event.chunks(), filename);
+            indexService.index(event.embeddings(), event.chunks(), filename);
             logger.info("Indexing successful for file: {}", filename);
             retryCounts.remove(filename);
         } catch (Exception e) {

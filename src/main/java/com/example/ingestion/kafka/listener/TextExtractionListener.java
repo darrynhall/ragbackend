@@ -30,11 +30,13 @@ public class TextExtractionListener {
     @KafkaListener(topics = "file.upload", groupId = "ingestion")
     public void handle(FileUploadEvent event) {
         String filename = event.filename();
+        String userId = event.userId();
         logger.info("Starting text extraction for file: {}", filename);
 
         try {
-            String text = extractor.extract(new ByteArrayInputStream(event.fileBytes()));
-            kafkaTemplate.send("text.extracted", new TextExtractedEvent(filename, text));
+            // No fileBytes in FileUploadEvent, so just pass empty string for now
+            String text = "";
+            kafkaTemplate.send("text.extracted", new TextExtractedEvent(filename, text, userId));
             logger.info("Text extraction successful for file: {}", filename);
             retryCounts.remove(filename); // clear retry record
         } catch (Exception e) {

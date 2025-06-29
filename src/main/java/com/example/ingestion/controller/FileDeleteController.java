@@ -1,6 +1,7 @@
 package com.example.ingestion.controller;
 
 import com.azure.search.documents.SearchClient;
+import java.util.List;
 import com.azure.storage.blob.BlobClientBuilder;
 import com.example.ingestion.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +18,7 @@ public class FileDeleteController {
     private final ChunkHashRepository chunkHashRepo;
     private final FileHashRepository fileHashRepo;
     private final IngestionStatusRepository statusRepo;
-    private final SearchClient searchClient;
-    private final S3Client s3Client;
+    private final SearchClient searchClient; 
 
     @Value("${azure.blob.container-name}")
     private String blobContainer;
@@ -40,7 +40,7 @@ public class FileDeleteController {
 
         // Delete from Azure AI Search
         try {
-            searchClient.deleteDocument("id", filename);
+            searchClient.deleteDocuments(List.of(filename));
         } catch (Exception e) {
             System.out.println("Azure AI Search deletion failed: " + e.getMessage());
         }
@@ -57,15 +57,15 @@ public class FileDeleteController {
             System.out.println("Azure Blob deletion failed: " + e.getMessage());
         }
 
-        // Delete from AWS S3
-        try {
-            s3Client.deleteObject(DeleteObjectRequest.builder()
-                    .bucket(s3Bucket)
-                    .key(filename)
-                    .build());
-        } catch (Exception e) {
-            System.out.println("AWS S3 deletion failed: " + e.getMessage());
-        }
+        // // Delete from AWS S3
+        // try {
+        //     s3Client.deleteObject(DeleteObjectRequest.builder()
+        //             .bucket(s3Bucket)
+        //             .key(filename)
+        //             .build());
+        // } catch (Exception e) {
+        //     System.out.println("AWS S3 deletion failed: " + e.getMessage());
+        // }
 
         return "Deleted artifacts for: " + filename;
     }

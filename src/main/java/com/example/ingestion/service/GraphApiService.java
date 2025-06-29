@@ -20,6 +20,10 @@ public class GraphApiService {
 
     public byte[] fetchFileBytes(String siteId, String driveId, String itemId) {
         DriveItem item = graphClient.sites(siteId).drives(driveId).items(itemId).buildRequest().get();
-        return graphClient.sites(siteId).drives(driveId).items(itemId).content().buildRequest().get().readAllBytes();
+        try (var is = graphClient.sites(siteId).drives(driveId).items(itemId).content().buildRequest().get()) {
+            return is.readAllBytes();
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Failed to read file bytes", e);
+        }
     }
 }

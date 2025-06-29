@@ -5,10 +5,12 @@ import com.azure.ai.openai.models.EmbeddingsOptions;
 import com.azure.ai.openai.models.Embeddings;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Profile;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Profile("azure")
 @Service
 @RequiredArgsConstructor
 public class AzureEmbeddingService implements EmbeddingService {

@@ -35,6 +35,7 @@ public class EmbeddingListener {
     @KafkaListener(topics = "text.chunked", groupId = "ingestion")
     public void handle(ChunksGeneratedEvent event) {
         String filename = event.filename();
+        String userId = event.userId();
         logger.info("Starting embedding for file: {}", filename);
 
         try {
@@ -46,7 +47,7 @@ public class EmbeddingListener {
             }
 
             List<float[]> vectors = embeddingService.embed(newChunks);
-            kafkaTemplate.send("embedding.generated", new EmbeddingGeneratedEvent(filename, newChunks, vectors));
+            kafkaTemplate.send("embedding.generated", new EmbeddingGeneratedEvent(filename, vectors, newChunks, userId));
             logger.info("Embedding successful for file: {}", filename);
             retryCounts.remove(filename);
         } catch (Exception e) {

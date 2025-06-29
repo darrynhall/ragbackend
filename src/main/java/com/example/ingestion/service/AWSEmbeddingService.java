@@ -17,8 +17,12 @@ public class AWSEmbeddingService implements EmbeddingService {
     public List<float[]> embed(List<String> chunks) {
         // Simulated call to Bedrock - random vectors
         return chunks.stream()
-                .map(chunk -> new Random().doubles(EMBED_DIM).mapToObj(d -> (float) d).collect(Collectors.toList()))
-                .map(list -> list.stream().mapToFloat(f -> f).toArray())
+                .map(chunk -> {
+                    float[] arr = new float[EMBED_DIM];
+                    Random r = new Random();
+                    for (int i = 0; i < EMBED_DIM; i++) arr[i] = r.nextFloat();
+                    return arr;
+                })
                 .collect(Collectors.toList());
     }
 }
