@@ -1,10 +1,10 @@
-package com.example.ingestion.kafka.listener;
+package com.example.ingestion.jms.listener;
 
 import com.example.ingestion.model.EmbeddingGeneratedEvent;
 import com.example.ingestion.service.VectorIndexService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,7 +21,7 @@ public class IndexingListener {
         this.indexService = indexService;
     }
 
-    @KafkaListener(topics = "embedding.generated", groupId = "ingestion")
+    @JmsListener(destination = "embedding.generated")
     public void handle(EmbeddingGeneratedEvent event) {
         String filename = event.filename();
         logger.info("Starting indexing for file: {}", filename);

@@ -1,4 +1,4 @@
-package com.example.ingestion.kafka.listener;
+package com.example.ingestion.jms.listener;
 
 import com.example.ingestion.model.ChunksGeneratedEvent;
 import com.example.ingestion.model.EmbeddingGeneratedEvent;
@@ -6,8 +6,8 @@ import com.example.ingestion.service.EmbeddingService;
 import com.example.ingestion.service.DeconflictionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,21 +18,21 @@ public class EmbeddingListener {
     private static final Logger logger = LoggerFactory.getLogger(EmbeddingListener.class);
 
     private final EmbeddingService embeddingService;
-    private final KafkaTemplate<String, EmbeddingGeneratedEvent> kafkaTemplate;
+    private final JmsTemplate jmsTemplate;
     private final DeconflictionService deconflictionService;
 
     private final ConcurrentHashMap<String, Integer> retryCounts = new ConcurrentHashMap<>();
     private static final int MAX_RETRIES = 3;
 
     public EmbeddingListener(EmbeddingService embeddingService,
-                             KafkaTemplate<String, EmbeddingGeneratedEvent> kafkaTemplate,
+                             JmsTemplate jmsTemplate,
                              DeconflictionService deconflictionService) {
         this.embeddingService = embeddingService;
-        this.kafkaTemplate = kafkaTemplate;
+        this.jmsTemplate = jmsTemplate;
         this.deconflictionService = deconflictionService;
     }
 
-    @KafkaListener(topics = "text.chunked", groupId = "ingestion")
+    @JmsListener(destination = "text.chunked")
     public void handle(ChunksGeneratedEvent event) {
         String filename = event.filename();
         String userId = event.userId();
@@ -47,7 +47,7 @@ public class EmbeddingListener {
             }
 
             List<float[]> vectors = embeddingService.embed(newChunks);
-            kafkaTemplate.send("embedding.generated", new EmbeddingGeneratedEvent(filename, vectors, newChunks, userId));
+            jmsTemplate.convertAndSend("embedding.generated", new EmbeddingGeneratedEvent(filename, vectors, newChunks, userId));
             logger.info("Embedding successful for file: {}", filename);
             retryCounts.remove(filename);
         } catch (Exception e) {
