@@ -37,7 +37,7 @@ public class AzureConfig {
     private String indexName;
 
     @Bean
-	public OpenAIClient openAIClient() {
+	 OpenAIClient openAIClient() {
         return new OpenAIClientBuilder()
             .endpoint(openaiEndpoint)
             .credential(new AzureKeyCredential(openaiApiKey))
@@ -45,7 +45,7 @@ public class AzureConfig {
     }
 
     @Bean
-    public SearchClient searchClient() {
+     SearchClient searchClient() {
         return new SearchClientBuilder()
                 .credential(new AzureKeyCredential(searchApiKey))
                 .endpoint(searchEndpoint)
@@ -54,7 +54,7 @@ public class AzureConfig {
     }
 
     @Bean
-    public SearchIndexClient searchIndexClient() {
+     SearchIndexClient searchIndexClient() {
         return new SearchIndexClientBuilder()
                 .credential(new AzureKeyCredential(searchApiKey))
                 .endpoint(searchEndpoint)
@@ -71,7 +71,7 @@ public class AzureConfig {
     private String graphTenantId;
 
     @Bean
-    public TokenCredentialAuthProvider tokenCredentialAuthProvider() {
+     TokenCredentialAuthProvider tokenCredentialAuthProvider() {
         ClientSecretCredential clientSecretCredential = new ClientSecretCredentialBuilder()
                 .clientId(graphClientId)
                 .clientSecret(graphClientSecret)
@@ -83,7 +83,7 @@ public class AzureConfig {
     }
 
     @Bean
-    public GraphServiceClient<?> graphServiceClient(TokenCredentialAuthProvider tokenCredentialAuthProvider) {
+     GraphServiceClient<?> graphServiceClient(TokenCredentialAuthProvider tokenCredentialAuthProvider) {
         return GraphServiceClient
                 .builder()
                 .authenticationProvider(tokenCredentialAuthProvider)

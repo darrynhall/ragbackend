@@ -1,20 +1,22 @@
 package com.example.ingestion.jms.listener;
 
-import com.example.ingestion.model.TextExtractedEvent;
-import com.example.ingestion.model.ChunksGeneratedEvent;
-import com.example.ingestion.service.TextChunker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import com.example.ingestion.model.ChunksGeneratedEvent;
+import com.example.ingestion.model.TextExtractedEvent;
+import com.example.ingestion.service.TextChunker;
+
+import lombok.extern.log4j.Log4j2;
 
 @Component
+@Log4j2
 public class ChunkingListener {
-    private static final Logger logger = LoggerFactory.getLogger(ChunkingListener.class);
+
 
     private final TextChunker chunker;
     private final JmsTemplate jmsTemplate;
@@ -31,20 +33,20 @@ public class ChunkingListener {
     public void handle(TextExtractedEvent event) {
         String filename = event.filename();
         String userId = event.userId();
-        logger.info("Starting chunking for file: {}", filename);
+        log.info("Starting chunking for file: {}", filename);
         try {
             List<String> chunks = chunker.transform(event.text());
             jmsTemplate.convertAndSend("text.chunked", new ChunksGeneratedEvent(filename, chunks, userId));
-            logger.info("Chunking successful for file: {}", filename);
+            log.info("Chunking successful for file: {}", filename);
             retryCounts.remove(filename);
         } catch (Exception e) {
             int retries = retryCounts.getOrDefault(filename, 0);
-            logger.error("Chunking failed for file: {} [attempt {}/{}]", filename, retries + 1, MAX_RETRIES, e);
+            log.error("Chunking failed for file: {} [attempt {}/{}]", filename, retries + 1, MAX_RETRIES, e);
             if (retries < MAX_RETRIES - 1) {
                 retryCounts.put(filename, retries + 1);
                 handle(event);
             } else {
-                logger.error("Chunking permanently failed for file: {}", filename);
+            	log.error("Chunking permanently failed for file: {}", filename);
                 retryCounts.remove(filename);
             }
         }

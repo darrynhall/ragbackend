@@ -1,6 +1,5 @@
 package com.example.ingestion.config;
 
-import jakarta.jms.Queue;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,27 +7,27 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class JmsConfig {
     @Bean
-    public Queue fileUploadedQueue() {
+    ActiveMQQueue fileUploadedQueue() {
         return new ActiveMQQueue("file.uploaded");
     }
 
     @Bean
-    public Queue fileDeletedQueue() {
+    ActiveMQQueue fileDeletedQueue() {
         return new ActiveMQQueue("file.deleted");
     }
 
     @Bean
-    public Queue textExtractedQueue() {
+    ActiveMQQueue textExtractedQueue() {
         return new ActiveMQQueue("text.extracted");
     }
 
     @Bean
-    public Queue textChunkedQueue() {
+    ActiveMQQueue textChunkedQueue() {
         return new ActiveMQQueue("text.chunked");
     }
 
     @Bean
-    public Queue embeddingGeneratedQueue() {
+    ActiveMQQueue embeddingGeneratedQueue() {
         return new ActiveMQQueue("embedding.generated");
     }
 }
