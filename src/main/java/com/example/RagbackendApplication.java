@@ -2,10 +2,10 @@ package com.example;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.jms.annotation.EnableJms;
 
 @SpringBootApplication
-@EnableKafka
+@EnableJms
 public class RagbackendApplication {
 
     public static void main(String[] args) {

@@ -1,15 +1,4 @@
-Download and install Apache Kafka
-	0. Open a linux terminal
-		For windows, install and open gitbash terminal (https://git-scm.com/downloads)
-		
-	1. Download and extract Kafka (https://kafka.apache.org/downloads)
-	
-	2. start zookeeper (https://manishankarjaiswal.medium.com/installing-and-running-apache-kafka-on-windows-a-step-by-step-guide-part-1-7e957942e841)
-		.\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
-		
-	3. start kafka (https://kafka.apache.org/quickstart)
-
-		$ KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"		
-		$ bin/kafka-storage.sh format --standalone -t $KAFKA_CLUSTER_ID -c config/server.properties	
-		$ bin/kafka-server-start.sh config/server.properties
- 
+Install and run Apache ActiveMQ Classic
+    1. Download ActiveMQ from https://activemq.apache.org/components/classic/download/
+    2. Extract the archive and run `./bin/activemq start` (or `activemq.bat start` on Windows)
+    3. The broker will listen on `tcp://localhost:61616` by default
