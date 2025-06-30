@@ -1,12 +1,14 @@
 package com.example.ingestion.service;
 
-import com.example.ingestion.model.FileUploadEvent;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.InputStream;
+
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
+import com.example.ingestion.model.FileUploadEvent;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service responsible for initiating the ingestion pipeline for uploaded files.
