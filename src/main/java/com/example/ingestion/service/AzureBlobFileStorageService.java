@@ -28,6 +28,12 @@ public class AzureBlobFileStorageService implements FileStorageService {
                 .blobName(filename)
                 .buildClient()
                 .getBlockBlobClient();
-        client.upload(BinaryData.fromStream(content), true);
+
+        try {
+            byte[] data = content.readAllBytes();
+            client.upload(BinaryData.fromBytes(data), true);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to store file to Azure Blob Storage", e);
+        }
     }
 }
