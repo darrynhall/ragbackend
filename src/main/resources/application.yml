@@ -15,3 +15,7 @@ spring:
     broker-url: tcp://localhost:61616
     user: admin
     password: admin
+azure:
+  document:
+    endpoint: https://your-form-recognizer.cognitiveservices.azure.com/
+    api-key: your-form-recognizer-key
