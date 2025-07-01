@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.ingestion.model.FileUploadEvent;
 
+import com.example.ingestion.service.FileStorageService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FileUploadService {
 
     private final JmsTemplate jmsTemplate;
+    private final FileStorageService fileStorageService;
 
     /**
      * Upload the file content and send an event to start processing.
@@ -29,7 +32,11 @@ public class FileUploadService {
      * @param userId id of the user uploading the file
      */
     public void upload(String filename, InputStream content, String userId) {
-        // In this sample we just log and emit an event. The content would normally be stored.
+        try {
+            fileStorageService.save(filename, content);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to store uploaded file", e);
+        }
         log.info("Received file '{}' from user '{}'; emitting upload event", filename, userId);
         jmsTemplate.convertAndSend("file.uploaded", new FileUploadEvent(filename, userId, System.currentTimeMillis()));
     }

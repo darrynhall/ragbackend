@@ -19,3 +19,9 @@ azure:
   document:
     endpoint: https://your-form-recognizer.cognitiveservices.azure.com/
     api-key: your-form-recognizer-key
+  blob:
+    endpoint: https://your-storage-account.blob.core.windows.net/
+    container-name: your-container
+aws:
+  s3:
+    bucket-name: your-bucket
