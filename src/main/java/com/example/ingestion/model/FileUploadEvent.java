@@ -1,3 +1,5 @@
 package com.example.ingestion.model;
 
-public record FileUploadEvent(String filename, String userId, long timestamp) {}
+import java.io.Serializable;
+
+public record FileUploadEvent(String filename, String userId, long timestamp) implements Serializable{}

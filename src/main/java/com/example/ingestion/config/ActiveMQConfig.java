@@ -15,7 +15,7 @@ public class ActiveMQConfig {
      * Embedded ActiveMQ broker listening on {@code tcp://localhost:61616}. The
      * broker is non-persistent and JMX is disabled.
      */
-    @Bean(initMethod = "start", destroyMethod = "stop")
+//    @Bean(initMethod = "start", destroyMethod = "stop")
     BrokerService brokerService() throws Exception {
         BrokerService broker = new BrokerService();
         broker.addConnector("tcp://localhost:61616");

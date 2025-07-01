@@ -25,5 +25,5 @@ public class GraphApiConfig {
 		return new ClientSecretCredentialBuilder().clientId(clientId).clientSecret(clientSecret).tenantId(tenantId)
 				.build();
 	}
-
+ 
 }
