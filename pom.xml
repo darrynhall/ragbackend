@@ -26,6 +26,7 @@
         <azure-identity.version>1.16.2</azure-identity.version>
         <microsoft-graph.version>5.75.0</microsoft-graph.version>
         <azure-search-documents.version>11.8.0-beta.7</azure-search-documents.version>
+        <azure-ai-formrecognizer.version>4.1.13</azure-ai-formrecognizer.version>
     </properties>
 
     <dependencyManagement>
@@ -132,6 +133,11 @@
             <groupId>com.azure</groupId>
             <artifactId>azure-storage-blob</artifactId>
             <version>12.21.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-ai-formrecognizer</artifactId>
+            <version>${azure-ai-formrecognizer.version}</version>
         </dependency>
 
         <!-- Spring AI -->
