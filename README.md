@@ -14,6 +14,6 @@ An embedded ActiveMQ broker will start automatically on `localhost:61616` with t
 
 ## Text Extraction
 
-PDF files are processed using Azure Document Intelligence while other document
-types are sent to the Unstructured API. Configure the endpoints and API keys in
-`application.yml` under `azure.document` and `unstructured.api`.
+PDF files are processed using Azure Document Intelligence. Other document
+types are parsed locally with Apache Tika. Configure the Azure endpoint and
+key in `application.yml` under `azure.document`.
