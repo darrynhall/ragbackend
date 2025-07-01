@@ -15,6 +15,8 @@ import com.azure.search.documents.SearchClient;
 import com.azure.search.documents.SearchClientBuilder;
 import com.azure.search.documents.indexes.SearchIndexClient;
 import com.azure.search.documents.indexes.SearchIndexClientBuilder;
+import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClient;
+import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClientBuilder;
 import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
 import com.microsoft.graph.requests.GraphServiceClient;
 
@@ -35,6 +37,12 @@ public class AzureConfig {
 
     @Value("${spring.ai.azure.search.index-name}")
     private String indexName;
+
+    @Value("${azure.document.endpoint}")
+    private String documentEndpoint;
+
+    @Value("${azure.document.api-key}")
+    private String documentApiKey;
 
     @Bean
 	 OpenAIClient openAIClient() {
@@ -58,6 +66,14 @@ public class AzureConfig {
         return new SearchIndexClientBuilder()
                 .credential(new AzureKeyCredential(searchApiKey))
                 .endpoint(searchEndpoint)
+                .buildClient();
+    }
+
+    @Bean
+     DocumentAnalysisClient documentAnalysisClient() {
+        return new DocumentAnalysisClientBuilder()
+                .endpoint(documentEndpoint)
+                .credential(new AzureKeyCredential(documentApiKey))
                 .buildClient();
     }
 
