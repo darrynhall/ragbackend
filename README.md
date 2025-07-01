@@ -10,4 +10,4 @@ Run the application with Maven:
 mvn spring-boot:run
 ```
 
-The default configuration expects an ActiveMQ instance running on `localhost:61616` with the default `admin`/`admin` credentials.
+An embedded ActiveMQ broker will start automatically on `localhost:61616` with the default `admin`/`admin` credentials. You can still point the application at an external broker by overriding `spring.activemq.broker-url`.
