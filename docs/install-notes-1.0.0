@@ -1,6 +1,6 @@
-Install and run Apache ActiveMQ Classic (optional)
-    1. If you prefer an external broker, download ActiveMQ from https://activemq.apache.org/components/classic/download/
-    2. Extract the archive and run `./bin/activemq start` (or `activemq.bat start` on Windows)
+Install and run Apache ActiveMQ Artemis (optional)
+    1. If you prefer an external broker, download Artemis from https://activemq.apache.org/components/artemis/download/
+    2. Extract the archive and run `./bin/artemis run` (or `artemis.bat run` on Windows)
     3. The broker will listen on `tcp://localhost:61616` by default
 
-The application now starts an embedded broker automatically, so installing ActiveMQ is no longer required for development.
+The application now starts an embedded Artemis broker automatically, so installing Artemis is no longer required for development.

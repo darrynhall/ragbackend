@@ -52,12 +52,11 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
             <version>${spring.boot.version}</version>
         </dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-broker -->
-		<dependency>
-		    <groupId>org.apache.activemq</groupId>
-		    <artifactId>activemq-broker</artifactId>
-		    <version>5.18.4</version>
-		</dependency>
+                <!-- Embedded Artemis broker -->
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-artemis</artifactId>
+                </dependency>
  
  		<!-- https://mvnrepository.com/artifact/org.springframework/spring-jms -->
                 <dependency>

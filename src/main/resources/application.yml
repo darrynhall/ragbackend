@@ -11,7 +11,7 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
-  activemq:
-    broker-url: tcp://localhost:61616
+  artemis:
+    mode: embedded
     user: admin
     password: admin
