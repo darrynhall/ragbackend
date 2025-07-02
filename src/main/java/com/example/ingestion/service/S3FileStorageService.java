@@ -37,4 +37,16 @@ public class S3FileStorageService implements FileStorageService {
             throw new RuntimeException("Failed to store file to S3", e);
         }
     }
+
+	@Override
+	public void save(String filename, InputStream content, long length) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public InputStream getFileInputStream(String filename) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

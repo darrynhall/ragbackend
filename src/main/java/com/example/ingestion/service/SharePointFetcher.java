@@ -67,7 +67,9 @@ public class SharePointFetcher {
                                 .buildRequest()
                                 .get()) {
 
-                            fileUploadService.upload(item.name, contentStream, "sharepoint");
+                        	long contentLength = contentStream.readAllBytes().length;
+                        	contentStream.reset(); // Reset the stream to allow re-reading
+                            fileUploadService.upload(item.name, contentStream, contentLength, "sharepoint");
 
                         } catch (Exception ex) {
                             log.error("Failed to download or ingest: {}", item.name, ex);

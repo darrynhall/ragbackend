@@ -1,16 +1,18 @@
 package com.example.ingestion.jms.listener;
 
-import com.example.ingestion.model.FileUploadEvent;
-import com.example.ingestion.model.TextExtractedEvent;
-import com.example.ingestion.service.TextExtractorService;
+import java.io.InputStream;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayInputStream;
-import java.util.concurrent.ConcurrentHashMap;
+import com.example.ingestion.model.FileUploadEvent;
+import com.example.ingestion.model.TextExtractedEvent;
+import com.example.ingestion.service.FileStorageService;
+import com.example.ingestion.service.TextExtractorService;
 
 @Component
 public class TextExtractionListener {
@@ -18,13 +20,15 @@ public class TextExtractionListener {
 
     private final TextExtractorService extractor;
     private final JmsTemplate jmsTemplate;
+    private final FileStorageService fileStorageService;
 
     private final ConcurrentHashMap<String, Integer> retryCounts = new ConcurrentHashMap<>();
     private static final int MAX_RETRIES = 3;
 
-    public TextExtractionListener(TextExtractorService extractor, JmsTemplate jmsTemplate) {
+    public TextExtractionListener(TextExtractorService extractor, JmsTemplate jmsTemplate, FileStorageService fileStorageService) {
         this.extractor = extractor;
         this.jmsTemplate = jmsTemplate;
+        this.fileStorageService = fileStorageService;
     }
 
     @JmsListener(destination = "file.uploaded")
@@ -35,7 +39,9 @@ public class TextExtractionListener {
 
         try {
             // No fileBytes in FileUploadEvent, so just pass empty string for now
-            String text = "";
+        	//read file from azure storage in input stream
+        	InputStream inputStream = fileStorageService.getFileInputStream(filename);
+            String text = extractor.extract(inputStream, filename);
             jmsTemplate.convertAndSend("text.extracted", new TextExtractedEvent(filename, text, userId));
             logger.info("Text extraction successful for file: {}", filename);
             retryCounts.remove(filename); // clear retry record

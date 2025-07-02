@@ -31,9 +31,9 @@ public class FileUploadService {
      * @param content the file content
      * @param userId id of the user uploading the file
      */
-    public void upload(String filename, InputStream content, String userId) {
+    public void upload(String filename, InputStream content, long length, String userId) {
         try {
-            fileStorageService.save(filename, content);
+            fileStorageService.save(filename, content, length);
         } catch (Exception e) {
             throw new RuntimeException("Failed to store uploaded file", e);
         }

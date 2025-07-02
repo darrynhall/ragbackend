@@ -37,7 +37,7 @@ public class ChunkingListener {
         try {
             List<String> chunks = chunker.transform(event.text());
             jmsTemplate.convertAndSend("text.chunked", new ChunksGeneratedEvent(filename, chunks, userId));
-            log.info("Chunking successful for file: {}", filename);
+            log.info("Chunking successful for file: {} \n ch", filename);
             retryCounts.remove(filename);
         } catch (Exception e) {
             int retries = retryCounts.getOrDefault(filename, 0);

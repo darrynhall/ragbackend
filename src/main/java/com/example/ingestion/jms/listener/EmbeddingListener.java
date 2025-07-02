@@ -39,13 +39,14 @@ public class EmbeddingListener {
         logger.info("Starting embedding for file: {}", filename);
 
         try {
+        	 
             List<String> chunks = event.chunks();
-            List<String> newChunks = deconflictionService.filterDuplicateChunks(chunks, filename);
-            if (newChunks.isEmpty()) {
-                logger.info("No new content to embed for file: {}", filename);
-                return;
-            }
-
+//            List<String> newChunks = deconflictionService.filterDuplicateChunks(chunks, filename);
+//            if (newChunks.isEmpty()) {
+//                logger.info("No new content to embed for file: {}", filename);
+//                return;
+//            }
+            List<String> newChunks =event.chunks();
             List<float[]> vectors = embeddingService.embed(newChunks);
             jmsTemplate.convertAndSend("embedding.generated", new EmbeddingGeneratedEvent(filename, vectors, newChunks, userId));
             logger.info("Embedding successful for file: {}", filename);
