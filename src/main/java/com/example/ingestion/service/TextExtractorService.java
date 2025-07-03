@@ -13,13 +13,12 @@ import com.azure.ai.formrecognizer.documentanalysis.models.AnalyzeResult;
 import com.azure.ai.formrecognizer.documentanalysis.models.DocumentLine;
 import com.azure.ai.formrecognizer.documentanalysis.models.DocumentPage;
 import com.azure.core.util.BinaryData;
-import com.example.ingestion.etl.Extractor;
 
 import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
-public class TextExtractorService implements Extractor<InputStream, String> {
+public class TextExtractorService {
 	
 	private static int MAX_CHARACTERS_TO_LOG = 1000;
 
