@@ -1,19 +1,20 @@
 package com.example.ingestion.service;
 
-import org.springframework.stereotype.Service;
-
-
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import org.springframework.ai.document.Document;
+import org.springframework.ai.transformer.splitter.TokenTextSplitter;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TextChunker {
 
+    private final TokenTextSplitter splitter = new TokenTextSplitter();
+
     public List<String> transform(String text) {
-        return Arrays.stream(text.split("\n\n"))
-                     .map(String::trim)
-                     .filter(s -> !s.isEmpty())
-                     .collect(Collectors.toList());
+        List<Document> documents = splitter.split(new Document(text));
+        return documents.stream()
+                .map(Document::getText)
+                .toList();
     }
 }
