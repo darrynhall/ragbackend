@@ -14,9 +14,9 @@ An embedded ActiveMQ broker will start automatically on `localhost:61616` with t
 
 ## Text Extraction
 
-PDF files are processed using Azure Document Intelligence. Other document
-types are parsed locally with Apache Tika. Configure the Azure endpoint and
-key in `application.yml` under `azure.document`.
+Text extraction is handled by Spring AI's document readers. PDF files are
+processed using `ParagraphPdfDocumentReader`, while other formats use
+`TikaDocumentReader`.
 
 Uploaded files are persisted to Azure Blob Storage by default. Configure the
 blob endpoint and container in `application.yml` under `azure.blob`. To use AWS
