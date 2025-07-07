@@ -10,7 +10,7 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
-	<groupId>com.example</groupId>
+	<groupId>org.aero</groupId>
 	<artifactId>ingestion</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -117,17 +117,33 @@
 		<!-- Core Spring AI dependency containing FunctionCallbackResolver -->
 		<!--
 		https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-core -->
+
+
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-client-chat</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-core</artifactId>
 			<version>1.0.0-M6</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-tika-document-reader</artifactId>
+		</dependency>
 
-		<!-- Azure and Microsoft Graph -->
+
 		<dependency>
 			<groupId>com.azure</groupId>
 			<artifactId>azure-ai-openai</artifactId>
 			<version>${azure-ai-openai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-azure-store</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.azure</groupId>
@@ -160,15 +176,18 @@
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-starter-model-azure-openai</artifactId>
 		</dependency>
-                <dependency>
-                        <groupId>org.springframework.ai</groupId>
-                        <artifactId>spring-ai-starter-vector-store-azure</artifactId>
-                </dependency>
-                <dependency>
-                        <groupId>org.springframework.ai</groupId>
-                        <artifactId>spring-ai-etl</artifactId>
-                        <version>1.0.0-M6</version>
-                </dependency>
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-starter-vector-store-azure</artifactId>
+		</dependency>
+		
+		<!--
+		https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-vector-store -->
+		<dependency>
+			<groupId>org.springframework.ai</groupId>
+			<artifactId>spring-ai-vector-store</artifactId>
+
+		</dependency>
 
 		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
@@ -189,6 +208,18 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
+		</dependency>
+
+		<!--		<dependency>
+			<groupId>org.apache.opennlp</groupId>
+			<artifactId>opennlp-tools</artifactId>
+			<version>2.5.4</version>
+		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/com.azure/azure-ai-textanalytics -->
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-ai-textanalytics</artifactId>
+			<version>5.5.7</version>
 		</dependency>
 	</dependencies>
 

@@ -1,5 +1,6 @@
 package com.example.ingestion.service;
 
+import org.aero.ingestion.service.TextChunker;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
