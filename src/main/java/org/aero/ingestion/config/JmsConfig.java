@@ -6,6 +6,8 @@ package org.aero.ingestion.config;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+import jakarta.jms.ConnectionFactory;
 
 @Configuration
 public class JmsConfig {
@@ -32,5 +34,13 @@ public class JmsConfig {
     @Bean
     ActiveMQQueue embeddingGeneratedQueue() {
         return new ActiveMQQueue("embedding.generated");
+    }
+
+    @Bean
+    DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
+        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setConcurrency("5");
+        return factory;
     }
 }
