@@ -40,33 +40,53 @@ public class CustomAzureVectorStore extends AzureVectorStore {
 
 	}
 
-	@Override
-	public void add(List<Document> documents) {
-		Assert.notNull(documents, "Documents must not be null");
-		if (documents.isEmpty()) {
-			return;
-		}
+        @Override
+        public void add(List<Document> documents) {
+                Assert.notNull(documents, "Documents must not be null");
+                if (documents.isEmpty()) {
+                        return;
+                }
 
-		// Create a list of Azure SearchDocuments from the Spring AI Documents
-		List<com.azure.search.documents.SearchDocument> searchDocuments = documents.stream().map(this::toSearchDocument)
-				.collect(Collectors.toList());
+                int batchSize = 100;
+                for (int i = 0; i < documents.size(); i += batchSize) {
+                        List<Document> batch = documents.subList(i, Math.min(i + batchSize, documents.size()));
+                        List<com.azure.search.documents.SearchDocument> searchDocuments = batch.stream()
+                                        .map(this::toSearchDocument).collect(Collectors.toList());
+                        IndexDocumentsResult result = this.searchClient.uploadDocuments(searchDocuments);
+                        log.info("Uploaded {} chunk documents. Success count: {}", batch.size(),
+                                        result.getResults().stream().filter(r -> r.isSucceeded()).count());
+                }
+        }
 
-		// Upload the documents using the underlying client
-		IndexDocumentsResult result = this.searchClient.uploadDocuments(searchDocuments);
+        public void add(List<String> chunks, List<float[]> embeddings) {
+                Assert.isTrue(chunks.size() == embeddings.size(), "Chunks and embeddings size mismatch");
+                if (chunks.isEmpty()) {
+                        return;
+                }
+                int batchSize = 100;
+                for (int i = 0; i < chunks.size(); i += batchSize) {
+                        List<com.azure.search.documents.SearchDocument> searchDocuments = new ArrayList<>();
+                        for (int j = i; j < Math.min(i + batchSize, chunks.size()); j++) {
+                                Document doc = new Document(chunks.get(j));
+                                searchDocuments.add(toSearchDocument(doc, embeddings.get(j)));
+                        }
+                        IndexDocumentsResult result = this.searchClient.uploadDocuments(searchDocuments);
+                        log.info("Uploaded {} chunk documents. Success count: {}", searchDocuments.size(),
+                                        result.getResults().stream().filter(r -> r.isSucceeded()).count());
+                }
+        }
 
-		// Optional: Add logging to check for success
-		log.info("Uploaded {} chunks documents. Success count: {}", documents.size(),
-				result.getResults().stream().filter(r -> r.isSucceeded()).count());
-	}
+        private SearchDocument toSearchDocument(Document document) {
+                float[] embedding = this.embeddingModel.embed(document);
+                return toSearchDocument(document, embedding);
+        }
 
-	private SearchDocument toSearchDocument(Document document) {
-		// Generate the embedding for the content
-		float[] embedding = this.embeddingModel.embed(document);
-
-		// Create the Azure SearchDocument map
-		com.azure.search.documents.SearchDocument searchDocument = new com.azure.search.documents.SearchDocument();
-		searchDocument.put("id", document.getId());
-		searchDocument.put("content", document.getText());
+        private SearchDocument toSearchDocument(Document document, float[] embedding) {
+                
+                // Create the Azure SearchDocument map
+                com.azure.search.documents.SearchDocument searchDocument = new com.azure.search.documents.SearchDocument();
+                searchDocument.put("id", document.getId());
+                searchDocument.put("content", document.getText());
 		searchDocument.put("embedding", embedding);
 
 		try {
