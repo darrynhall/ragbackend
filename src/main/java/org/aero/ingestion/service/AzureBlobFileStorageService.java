@@ -49,7 +49,7 @@ public class AzureBlobFileStorageService implements FileStorageService {
 	}
 
 	@Override
-	public void save(String filename, InputStream content, long length) {
+	public void save(String filename, String targetCloudStorageFolder, InputStream content, long length) {
 		BlockBlobClient client = new BlobClientBuilder().connectionString(connectionString).containerName(container)
 				.blobName(filename).buildClient().getBlockBlobClient();
 		boolean overwriteIfExists = true;

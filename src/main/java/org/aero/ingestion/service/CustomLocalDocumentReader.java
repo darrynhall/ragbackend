@@ -18,7 +18,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Component
 @Log4j2
-public class CustomDocumentReader implements DocumentReader {
+public class CustomLocalDocumentReader implements DocumentReader {
 
 
   @Value("${input.directory:c:/temp/ingestion-files/}")

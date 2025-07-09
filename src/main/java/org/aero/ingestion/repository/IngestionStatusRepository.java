@@ -1,6 +1,6 @@
 package org.aero.ingestion.repository;
 
-import org.aero.ingestion.model.IngestionStatus;
+import org.aero.ingestion.entity.IngestionStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

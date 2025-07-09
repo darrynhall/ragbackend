@@ -2,7 +2,7 @@ package org.aero.ingestion.controller;
 
 import lombok.RequiredArgsConstructor;
 
-import org.aero.ingestion.model.IngestionStatus;
+import org.aero.ingestion.entity.IngestionStatus;
 import org.aero.ingestion.repository.IngestionStatusRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

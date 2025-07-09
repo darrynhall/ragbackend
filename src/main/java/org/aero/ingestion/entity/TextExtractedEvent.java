@@ -1,4 +1,4 @@
-package org.aero.ingestion.model;
+package org.aero.ingestion.entity;
 
 import java.io.Serializable;
 

@@ -20,7 +20,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<spring.boot.version>3.4.7</spring.boot.version>
-		<h2.version>2.3.232</h2.version>
+
 		<flyway.version>11.8.2</flyway.version>
 		<lombok.version>1.18.38</lombok.version>
 		<azure-ai-openai.version>1.0.0-beta.16</azure-ai-openai.version>
@@ -28,6 +28,8 @@
 		<microsoft-graph.version>5.75.0</microsoft-graph.version>
 		<azure-search-documents.version>11.8.0-beta.7</azure-search-documents.version>
 		<azure-ai-formrecognizer.version>4.1.13</azure-ai-formrecognizer.version>
+		<flyway.version>8.5.13</flyway.version>
+		<mysql-connector.version>8.0.28</mysql-connector.version>
 	</properties>
 
 	<dependencyManagement>
@@ -89,14 +91,26 @@
 		</dependency>
 
 		<!-- Database -->
+
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
+			<!-- Downgrade flyway for compatibility with Azure MS SQL -->
+			<version>${flyway.version}</version> <!--$NO-MVN-MAN-VER$ -->
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-mysql</artifactId>
+			<version>${flyway.version}</version> <!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 
 		<!-- Lombok -->
@@ -170,7 +184,11 @@
 			<artifactId>azure-ai-formrecognizer</artifactId>
 			<version>${azure-ai-formrecognizer.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-ai-textanalytics</artifactId>
+			<version>5.5.7</version>
+		</dependency>
 		<!-- Spring AI -->
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
@@ -180,7 +198,7 @@
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-starter-vector-store-azure</artifactId>
 		</dependency>
-		
+
 		<!--
 		https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-vector-store -->
 		<dependency>
@@ -210,17 +228,26 @@
 			<artifactId>spring-boot-devtools</artifactId>
 		</dependency>
 
-		<!--		<dependency>
-			<groupId>org.apache.opennlp</groupId>
-			<artifactId>opennlp-tools</artifactId>
-			<version>2.5.4</version>
-		</dependency>-->
-		<!-- https://mvnrepository.com/artifact/com.azure/azure-ai-textanalytics -->
+		<!--
+		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
 		<dependency>
-			<groupId>com.azure</groupId>
-			<artifactId>azure-ai-textanalytics</artifactId>
-			<version>5.5.7</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.azure/azure-ai-textanalytics -->
+
+
+		<dependency>
+			<groupId>org.aero.appdev</groupId>
+			<artifactId>common-loggedinuser-person</artifactId>
+			<version>1.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aero.appdev</groupId>
+			<artifactId>common-cors</artifactId>
+			<version>1.6</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

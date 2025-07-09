@@ -104,6 +104,9 @@ public class IndexCreationService {
 				new SearchField("file_class", SearchFieldDataType.STRING)
 				.setKey(false).setFilterable(true).setSortable(true).setFacetable(true) .setSearchable(false),
 				
+				new SearchField("uploader_badge", SearchFieldDataType.STRING)
+				.setKey(false).setFilterable(true).setSortable(false).setFacetable(true) .setSearchable(true),
+				
 				new SearchField("folder", SearchFieldDataType.STRING)
 				.setKey(false).setFilterable(true).setSortable(true).setFacetable(true) .setSearchable(false),
 						
@@ -111,11 +114,22 @@ public class IndexCreationService {
 				.setKey(false).setFilterable(true).setSortable(false).setFacetable(true) .setSearchable(false),
 				
 				new SearchField("pages", SearchFieldDataType.collection(SearchFieldDataType.INT32))
-				.setKey(false).setFilterable(false).setSortable(false).setFacetable(false) .setSearchable(false),
-					
+				.setKey(false).setFilterable(false).setSortable(false).setFacetable(false) .setSearchable(false),					
 				
 				new SearchField("source", SearchFieldDataType.STRING)
 				.setKey(false).setFilterable(false).setSortable(false).setFacetable(false) .setSearchable(true)
+				.setAnalyzerName(LexicalAnalyzerName.STANDARD_LUCENE),
+				
+				new SearchField("allowed_users", SearchFieldDataType.STRING)
+				.setKey(false).setFilterable(true).setSortable(false).setFacetable(false) .setSearchable(true)
+				.setAnalyzerName(LexicalAnalyzerName.STANDARD_LUCENE),
+				
+				new SearchField("allowed_groups", SearchFieldDataType.STRING)
+				.setKey(false).setFilterable(true).setSortable(false).setFacetable(false) .setSearchable(true)
+				.setAnalyzerName(LexicalAnalyzerName.STANDARD_LUCENE),
+				
+				new SearchField("sharepoint_permissions", SearchFieldDataType.STRING)
+				.setKey(false).setFilterable(true).setSortable(false).setFacetable(false) .setSearchable(true)
 				.setAnalyzerName(LexicalAnalyzerName.STANDARD_LUCENE),
 				
 				new SearchField("title", SearchFieldDataType.STRING)

@@ -16,6 +16,7 @@ import org.springframework.util.Assert;
 import com.azure.ai.textanalytics.TextAnalyticsClient;
 import com.azure.ai.textanalytics.models.KeyPhrasesCollection;
 import com.azure.search.documents.SearchClient;
+import com.azure.search.documents.SearchDocument;
 import com.azure.search.documents.indexes.SearchIndexClient;
 import com.azure.search.documents.models.IndexDocumentsResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +30,6 @@ public class CustomAzureVectorStore extends AzureVectorStore {
 	private final SearchClient searchClient;
 	private final EmbeddingModel embeddingModel;
 	private final TextAnalyticsClient textAnalyticsClient;
- 
 
 	public CustomAzureVectorStore(SearchIndexClient searchIndexClient, SearchClient searchClient,
 			EmbeddingModel embeddingModel, TextAnalyticsClient textAnalyticsClient) {
@@ -55,50 +55,41 @@ public class CustomAzureVectorStore extends AzureVectorStore {
 		IndexDocumentsResult result = this.searchClient.uploadDocuments(searchDocuments);
 
 		// Optional: Add logging to check for success
-		log.info("Uploaded {} documents. Success count: {}", documents.size(),
+		log.info("Uploaded {} chunks documents. Success count: {}", documents.size(),
 				result.getResults().stream().filter(r -> r.isSucceeded()).count());
 	}
 
-	private com.azure.search.documents.SearchDocument toSearchDocument(Document document) {
+	private SearchDocument toSearchDocument(Document document) {
 		// Generate the embedding for the content
 		float[] embedding = this.embeddingModel.embed(document);
 
 		// Create the Azure SearchDocument map
 		com.azure.search.documents.SearchDocument searchDocument = new com.azure.search.documents.SearchDocument();
 		searchDocument.put("id", document.getId());
-		searchDocument.put("content", document.getFormattedContent());
+		searchDocument.put("content", document.getText());
 		searchDocument.put("embedding", embedding);
 
 		try {
 			searchDocument.put("processed_datetime", Calendar.getInstance().getTime());
 			searchDocument.put("chunk_file", "[should be chunk file path]");
-			searchDocument.put("file_class", "text");
-			searchDocument.put("folder", "blob store folder containing uploaded file");
+			searchDocument.put("file_class", "[text]");
+			searchDocument.put("folder", "[blob store folder containing uploaded file]");
 //			searchDocument.put("tags", "[tags]");
 //			searchDocument.put("pages", "[pages]");
 			searchDocument.put("title", "[title]");
 			searchDocument.put("translated_title", "[translated_title]");
-			
-			//create and populated entities
-			List<String> entities = textAnalyticsClient.recognizeEntities(document.getText()).stream()
-					.map(entity -> entity.getText()).toList();
-			log.info("entities: " + entities);
-			searchDocument.put("entities", entities);
 
-			//create an populated key phrases
-			KeyPhrasesCollection key_phrases = textAnalyticsClient.extractKeyPhrases(document.getText()); 
-			List<String> allKeyPhrases = new ArrayList<>();
-			key_phrases.forEach(documentResult -> {
-				allKeyPhrases.add(documentResult);
-			});
-			
-			log.info("allKeyPhrases: " + allKeyPhrases);
-		 	searchDocument.put("key_phrases", allKeyPhrases);
-		 	
-		 	Map<String, Object> searchDocumentCopy = new HashMap<String, Object>(searchDocument);
-		 	searchDocumentCopy.remove("embedding");
-		 	
-		 	searchDocument.put("metadata", new ObjectMapper().writeValueAsString(searchDocumentCopy));
+			// create and populate entities
+			searchDocument.put("entities", extractEntities(document));
+			log.info("entities: " + searchDocument.get("entities"));
+
+			// create an populate key phrases
+			searchDocument.put("key_phrases", extractKeyPhrases(document));
+			log.info("key_phrases: " + searchDocument.get("key_phrases"));
+
+			Map<String, Object> searchDocumentCopy = new HashMap<String, Object>(searchDocument);
+			searchDocumentCopy.remove("embedding");
+			searchDocument.put("metadata", new ObjectMapper().writeValueAsString(searchDocumentCopy));
 
 		} catch (Exception e) {
 			log.error("Error processing document: {}", searchDocument.get("file_name"), e);
@@ -107,42 +98,25 @@ public class CustomAzureVectorStore extends AzureVectorStore {
 		return searchDocument;
 	}
 
+	List<String>  extractEntities(Document document){
+		List<String> entities = textAnalyticsClient.recognizeEntities(document.getText()).stream()
+				.map(entity -> entity.getText()).toList();
+		log.info("entities: " + entities);
+		return entities;
+		
+	}
 
+	List<String>  extractKeyPhrases(Document document){
 
-//	private void preProcessChunks(List<Document> chunks) {
-//		log.info("Preprocessing chunks...");
-//
-//		chunks.stream().forEach(document -> {
-//			try {
-//				document.getMetadata().put("processed_datetime", Calendar.getInstance().getTime());
-//				document.getMetadata().put("chunk_file", "[chunk_file]");
-//				document.getMetadata().put("file_class", "text");
-//				document.getMetadata().put("folder", "folder");
-//				document.getMetadata().put("tags", "[tags]");
-//				document.getMetadata().put("pages", "[pages]");
-//				document.getMetadata().put("title", "[title]");
-//				document.getMetadata().put("translated_title", "[translated_title]");
-//				List<String> entities = textAnalyticsClient.recognizeEntities(document.getText()).stream()
-//						.map(entity -> entity.getText()).toList();
-//				log.info(entities);
-//				document.getMetadata().put("entities", entities);
-//
-//				KeyPhrasesCollection key_phrases = textAnalyticsClient.extractKeyPhrases(document.getText());
-//
-//				log.info(key_phrases);
-//
-//				List<String> allKeyPhrases = new ArrayList<>();
-//
-//				// 1. Loop through the result for each document
-//				key_phrases.forEach(documentResult -> {
-//					allKeyPhrases.add(documentResult);
-//				});
-//				document.getMetadata().put("key_phrases", allKeyPhrases);
-//
-//			} catch (Exception e) {
-//				log.error("Error processing document: {}", document.getMetadata().get("file_name"), e);
-//			}
-//		});
-//
-//	}
+		//create an populated key phrases
+		KeyPhrasesCollection key_phrases = textAnalyticsClient.extractKeyPhrases(document.getText()); 
+		List<String> allKeyPhrases = new ArrayList<>();
+		key_phrases.forEach(documentResult -> {
+			allKeyPhrases.add(documentResult);
+		});
+		
+		return allKeyPhrases;
+		
+	}
+
 }

@@ -1,6 +1,6 @@
 package org.aero.ingestion.repository;
 
-import org.aero.ingestion.model.FileHash;
+import org.aero.ingestion.entity.FileHash;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

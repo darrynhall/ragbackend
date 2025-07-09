@@ -1,6 +1,5 @@
 package org.aero.ingestion.controller;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,30 +28,33 @@ public class FileUploadController {
 
 	@PostMapping(consumes = { "multipart/form-data", MediaType.APPLICATION_JSON_VALUE })
 	public ResponseEntity<List<String>> uploadFiles(@RequestPart(name = "file") final MultipartFile[] files) {
+
 		List<String> fileDownloadUris = new ArrayList<>();
-		String userId = "system"; // Replace with actual user id if available
+
+		String targetCloudStorageFolder  = "";
+				 List<String> allowedUserBadges = null;
+				 List<String> allowedUserGroups = null;
+				 List<String> allowedSharePointPermissions = null;
 		for (MultipartFile file : files) {
-			String fileName = file.getOriginalFilename();
+
 			try {
-				//convert bytes to inputstream
-				if (fileName == null || fileName.isEmpty()) {
-					
-					throw new IllegalArgumentException("File name must not be empty");
-				}
-				fileUploadService.upload(fileName, new ByteArrayInputStream(file.getBytes()),file.getBytes().length, userId);
+
+				fileUploadService.upload(file, targetCloudStorageFolder, allowedUserBadges, allowedUserGroups,
+						allowedSharePointPermissions);
+
 			} catch (Exception e) {
-				throw new RuntimeException("Failed to process file: " + fileName, e);
+				throw new RuntimeException("Failed to process file: " + file.getName(), e);
 			}
 			String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/files/download/")
-					.path(fileName).toUriString();
+					.path(file.getName()).toUriString();
 			fileDownloadUris.add(fileDownloadUri);
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(fileDownloadUris);
 	}
-	
+
 	@Autowired
 	EtlPipeline etlPipeline;
-	
+
 	@GetMapping("/ingestfromtemp")
 	public String ingestFromTemp() {
 		return etlPipeline.runIngestion();

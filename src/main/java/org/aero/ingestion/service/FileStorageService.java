@@ -14,7 +14,7 @@ public interface FileStorageService {
      */
     void save(String filename, InputStream content);
 
-	void save(String filename, InputStream content, long length);
-
 	InputStream getFileInputStream(String filename);
+
+	void save(String filename, String targetCloudStorageFolder, InputStream content, long length);
 }

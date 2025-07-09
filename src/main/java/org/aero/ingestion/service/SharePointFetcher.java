@@ -1,21 +1,22 @@
 package org.aero.ingestion.service;
 
-import com.microsoft.graph.models.DriveItem;
-import com.microsoft.graph.requests.GraphServiceClient;
-import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
-import com.azure.identity.ClientSecretCredential;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.aero.ingestion.model.IngestionStatus;
 import org.aero.ingestion.repository.IngestionStatusRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
+import com.azure.identity.ClientSecretCredential;
+import com.microsoft.graph.authentication.TokenCredentialAuthProvider;
+import com.microsoft.graph.models.DriveItem;
+import com.microsoft.graph.requests.GraphServiceClient;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -71,7 +72,12 @@ public class SharePointFetcher {
 
                         	long contentLength = contentStream.readAllBytes().length;
                         	contentStream.reset(); // Reset the stream to allow re-reading
-                            fileUploadService.upload(item.name, contentStream, contentLength, "sharepoint");
+                        	
+                        	 List<String> allowedUserBadges = new ArrayList<>();
+                 			List<String> allowedUserGroups  = new ArrayList<>();
+                 			List<String> allowedSharePointPermissions  = new ArrayList<>();
+                 			String targetCloudStorageFolder = "placeholder";
+                            fileUploadService.upload(contentStream, item.name, targetCloudStorageFolder,  allowedUserBadges, allowedUserGroups, allowedSharePointPermissions);
 
                         } catch (Exception ex) {
                             log.error("Failed to download or ingest: {}", item.name, ex);
@@ -83,6 +89,9 @@ public class SharePointFetcher {
             statusRepository.findAll().forEach(status -> {
                 if (status.getUserId().equals("sharepoint") && !currentFilenames.contains(status.getFilename())) {
                     log.info("Detected deleted SharePoint file: {}", status.getFilename());
+                    
+                    
+                    
                     fileUploadService.deleteByFilename(status.getFilename());
                 }
             });

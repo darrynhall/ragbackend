@@ -10,14 +10,10 @@ import org.springframework.jms.annotation.EnableJms;
 @SpringBootApplication
 @EnableJms
 @EnableAutoConfiguration(exclude = { ChatClientAutoConfiguration.class,
-		AzureVectorStoreAutoConfiguration.class /*
-												 * , OpenAiAutoConfiguration.class, AzureOpenAiAutoConfiguration.class,
-												 * ChatObservationAutoConfiguration.class
-												 */ })
+		AzureVectorStoreAutoConfiguration.class })
 public class RagbackendApplication {
 
 	public static void main(String[] args) {
-		System.setProperty("javax.net.debug", "ssl,handshake");
 		SpringApplication.run(RagbackendApplication.class, args);
 	}
 }

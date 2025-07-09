@@ -1,7 +1,11 @@
 package org.aero.ingestion.jms.listener;
 
- 
-import org.aero.ingestion.model.FileUploadEvent;
+import static org.aero.ingestion.constants.AppConstants.FILE_UPLOADED_QUEUE;
+
+import org.aero.ingestion.entity.FileUploadEvent;
+import org.aero.ingestion.service.CustomAzureDocumentReader;
+import org.aero.ingestion.service.EtlPipeline;
+import org.aero.ingestion.service.FileStorageService;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
@@ -16,15 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PipelineListener {
 
-	/*
-	 * private final EtlPipeline pipeline; private final
-	 * FileStorageService storageService; private final TextExtractorService
-	 * extractorService;
-	 */
-    @JmsListener(destination = "file.uploaded")
+	private final EtlPipeline etlPipeline;
+	private final FileStorageService storageService;
+/*
+ * Listens to the "file.uploaded" JMS topic and triggers the ETL pipeline.
+ */
+    @JmsListener(destination = FILE_UPLOADED_QUEUE)
     public void handle(FileUploadEvent event) {
-        String filename = event.filename();
-        log.info("Running ETL pipeline for {}", filename);
-    //    pipeline.process(new FileStorageDocumentReader(filename, storageService, extractorService));
+        log.info("Running ETL pipeline for {}",  event.fileName());
+        etlPipeline.runIngestion(new CustomAzureDocumentReader( event.fileName(), storageService).get());
     }
 }

@@ -60,7 +60,7 @@ public class AzureConfig {
 	private String languageEndpoint;
 
 	ProxyOptions proxyOptions = new ProxyOptions(ProxyOptions.Type.HTTP,
-			new InetSocketAddress("proxy-west.aero.org", 8080)).setCredentials("30097", "mon");
+			new InetSocketAddress("proxy-west.aero.org", 8080)).setCredentials("30097", "tue");
 	HttpClient httpClient2 = new NettyAsyncHttpClientBuilder().proxy(proxyOptions).build();
 
 	

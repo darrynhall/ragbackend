@@ -1,4 +1,4 @@
-package org.aero.ingestion.model;
+package org.aero.ingestion.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -11,11 +11,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class IngestionStatus {
+public class FileHash {
     @Id
+    private String hash;
     private String filename;
-    private String userId;
-    private String status; // STARTED, SUCCESS, FAILED
-    private String errorMessage;
-    private LocalDateTime timestamp;
+    private long size;
+    private LocalDateTime ingestedAt;
 }

@@ -2,8 +2,8 @@ package org.aero.ingestion.service;
 
 import lombok.RequiredArgsConstructor;
 
-import org.aero.ingestion.model.ChunkHash;
-import org.aero.ingestion.model.FileHash;
+import org.aero.ingestion.entity.ChunkHash;
+import org.aero.ingestion.entity.FileHash;
 import org.aero.ingestion.repository.ChunkHashRepository;
 import org.aero.ingestion.repository.FileHashRepository;
 import org.springframework.stereotype.Service;

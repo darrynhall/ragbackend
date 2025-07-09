@@ -1,4 +1,4 @@
-package org.aero.ingestion.model;
+package org.aero.ingestion.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

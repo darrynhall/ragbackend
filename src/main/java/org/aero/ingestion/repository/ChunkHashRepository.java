@@ -1,6 +1,6 @@
 package org.aero.ingestion.repository;
 
-import org.aero.ingestion.model.ChunkHash;
+import org.aero.ingestion.entity.ChunkHash;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ChunkHashRepository extends JpaRepository<ChunkHash, String> {
