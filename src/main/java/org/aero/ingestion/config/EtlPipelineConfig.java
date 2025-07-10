@@ -29,7 +29,18 @@ public class EtlPipelineConfig implements WebMvcConfigurer {
 
 	@Bean
 	TextSplitter textSplitter() {
-		return new TokenTextSplitter();
+		int chunkSize = 750;
+		 int minChunkSizeChars = 50;
+		 int minChunkLengthToEmbed = 0;
+		 int maxNumChunks = 5;
+		 boolean keepSeparator = true;
+		return new TokenTextSplitter(
+                 
+                 chunkSize,
+                 minChunkSizeChars,
+                 minChunkLengthToEmbed,
+                 maxNumChunks,
+                  keepSeparator);  
 	}
 
 	@Autowired

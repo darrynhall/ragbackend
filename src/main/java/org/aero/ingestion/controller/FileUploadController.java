@@ -1,5 +1,6 @@
 package org.aero.ingestion.controller;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,11 +36,12 @@ public class FileUploadController {
 				 List<String> allowedUserBadges = null;
 				 List<String> allowedUserGroups = null;
 				 List<String> allowedSharePointPermissions = null;
+				 
 		for (MultipartFile file : files) {
 
 			try {
 
-				fileUploadService.upload(file, targetCloudStorageFolder, allowedUserBadges, allowedUserGroups,
+				fileUploadService.upload( new ByteArrayInputStream(file.getBytes()),file.getName(), targetCloudStorageFolder, allowedUserBadges, allowedUserGroups,
 						allowedSharePointPermissions);
 
 			} catch (Exception e) {

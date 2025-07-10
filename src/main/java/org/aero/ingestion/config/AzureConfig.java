@@ -60,7 +60,7 @@ public class AzureConfig {
 	private String languageEndpoint;
 
 	ProxyOptions proxyOptions = new ProxyOptions(ProxyOptions.Type.HTTP,
-			new InetSocketAddress("proxy-west.aero.org", 8080)).setCredentials("30097", "tue");
+			new InetSocketAddress("proxy-west.aero.org", 8080)).setCredentials("30097", "thu");
 	HttpClient httpClient2 = new NettyAsyncHttpClientBuilder().proxy(proxyOptions).build();
 
 	
@@ -103,6 +103,7 @@ public class AzureConfig {
 	@Bean
 	DocumentAnalysisClient documentAnalysisClient() {
 		return new DocumentAnalysisClientBuilder().endpoint(documentEndpoint)
+				.httpClient(httpClient2)
 				.credential(new AzureKeyCredential(documentApiKey)).buildClient();
 	}
 

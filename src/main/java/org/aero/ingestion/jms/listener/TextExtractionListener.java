@@ -6,12 +6,15 @@ import org.aero.ingestion.entity.FileUploadEvent;
 import org.aero.ingestion.entity.TextExtractedEvent;
 import org.aero.ingestion.entity.IngestionStatus;
 import org.aero.ingestion.repository.IngestionStatusRepository;
-import org.aero.ingestion.service.CustomAzureDocumentReader;
+import org.aero.ingestion.service.CustomDocumentReader;
 import org.aero.ingestion.service.FileStorageService;
 import org.springframework.ai.document.Document;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
+
+import com.azure.ai.formrecognizer.documentanalysis.DocumentAnalysisClient;
+
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
@@ -29,12 +32,14 @@ public class TextExtractionListener {
         private final FileStorageService storageService;
         private final JmsTemplate jmsTemplate;
         private final IngestionStatusRepository statusRepo;
+        private final DocumentAnalysisClient documentAnalysisClient;
 
     @JmsListener(destination = FILE_UPLOADED_QUEUE, containerFactory = "jmsListenerContainerFactory")
     public void handle(FileUploadEvent event) {
         log.info("Extracting text from {}",  event.fileName());
         try {
-            var docs = new CustomAzureDocumentReader(event.fileName(), storageService).get();
+        	boolean useDocumentIntelligence = true;
+            var docs = new CustomDocumentReader(event.fileName(), storageService, documentAnalysisClient, useDocumentIntelligence).get();
             String text = docs.stream().map(Document::getText).collect(Collectors.joining("\n"));
             jmsTemplate.convertAndSend("text.extracted",
                     new TextExtractedEvent(event.fileName(), text, event.badgeNumber()));

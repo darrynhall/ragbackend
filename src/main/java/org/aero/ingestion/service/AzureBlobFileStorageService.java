@@ -36,36 +36,33 @@ public class AzureBlobFileStorageService implements FileStorageService {
 	private String container;
 
 	@Override
-	public void save(String filename, InputStream content) {
-		BlockBlobClient client = new BlobClientBuilder().endpoint(blobEndpoint).containerName(container)
-				.blobName(filename).buildClient().getBlockBlobClient();
-
-		try {
-			byte[] data = content.readAllBytes();
-			client.upload(BinaryData.fromBytes(data), true);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to store file to Azure Blob Storage", e);
-		}
-	}
-
-	@Override
-	public void save(String filename, String targetCloudStorageFolder, InputStream content, long length) {
+	public void save(String filename, String targetCloudStorageFolder, InputStream content) throws IOException {
+		
 		BlockBlobClient client = new BlobClientBuilder().connectionString(connectionString).containerName(container)
 				.blobName(filename).buildClient().getBlockBlobClient();
+		
+		Long length = (long) content.available();
+		
+		content.reset();
+		
+		log.info("Uploading file to Blob store file = %s , size %s".formatted(filename, length));		
+	
 		boolean overwriteIfExists = true;
-		// compute content length
-		log.info("Uploading file to Blob store file = %s , size %s".formatted(filename, length));
+		
 		client.upload(content, length, overwriteIfExists);
+		
 		log.info("Completed Uploading file to Blob store file = %s , size %s".formatted(filename, length));
 
 	}
 
 	@Override
 	public InputStream getFileInputStream(String filename) {
+		
 		BlobServiceClient blobServiceClient = new BlobServiceClientBuilder().connectionString(connectionString)
 				.buildClient();
 
 		BlobContainerClient containerClient = blobServiceClient.getBlobContainerClient(container);
+		
 		BlobClient blobClient = containerClient.getBlobClient(filename);
 
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
